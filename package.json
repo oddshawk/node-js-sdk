@@ -12,6 +12,9 @@
     "type": "git",
     "url": "git+https://github.com/oddshawk/node-js-sdk.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Nathan Edwards <nathan@oddshawk.io>",
   "license": "ISC",
   "bugs": {
