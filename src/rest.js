@@ -47,6 +47,8 @@ export default class Rest {
         withCredentials: true
       }).then(response => {
         this.authenticated = response.data.authenticated;
+      }).catch(e => {
+        throw new Error('API request failed with message: ' + e.message);
       });
     } else {
       return true;
@@ -55,8 +57,10 @@ export default class Rest {
 
   async events (fromNow = true) {
     await this.authenticate();
-    return axios.get('https://www.odds.software/rest/odds/events?fromNow=' + fromNow, this.options()).then(response => {
+    return axios.get('https://www.odds.software/rest/odds/events?fromNow=' + fromNow).then(response => {
       return response.data;
+    }).catch(e => {
+      throw new Error('API request failed with message: ' + e.message);
     });
   }
 
@@ -79,8 +83,12 @@ export default class Rest {
   async odds (filter) {
     await this.authenticate();
     const search = new URLSearchParams(filter).toString();
-    return axios.get('https://www.odds.software/rest/odds?' + search, this.options()).then(response => {
+    const options = this.options();
+    console.log(options);
+    return axios.get('https://www.odds.software/rest/odds?' + search, options).then(response => {
       return response.data;
+    }).catch(e => {
+      throw new Error('API request failed with message: ' + e.message);
     });
   }
 
@@ -92,6 +100,8 @@ export default class Rest {
       } else {
         return false;
       }
+    }).catch(e => {
+      throw new Error('API request failed with message: ' + e.message);
     });
   }
 
@@ -103,6 +113,8 @@ export default class Rest {
       } else {
         return false;
       }
+    }).catch(e => {
+      throw new Error('API request failed with message: ' + e.message);
     });
   }
 }

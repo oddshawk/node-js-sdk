@@ -10,7 +10,7 @@
 ```js
 import { OddsHawk } from '@oddshawk/oddshawk-sdk';
 
-const oddshawk = new OddsHawk(username, key);
+const oddshawk = new OddsHawk(username, key, true);
 
 // Get odds from REST API
 oddshawk.rest.odds({

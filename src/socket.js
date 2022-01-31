@@ -74,7 +74,7 @@ export default class Socket {
           this.closed = true;
         });
 
-        this.ws.on('message', (message) => {
+        this.ws.addEventListener('message', (message) => {
           message = JSON.parse(message.data);
           switch (message.message) {
             case 'auth':
