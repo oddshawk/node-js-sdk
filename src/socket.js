@@ -20,6 +20,7 @@ export default class Socket {
         };
 
         this.ws.onclose = (e) => {
+          this.closeFunction();
           this.closed = true;
         };
 
@@ -66,6 +67,7 @@ export default class Socket {
         });
 
         this.ws.on('close', (e) => {
+          this.closeFunction();
           this.closed = true;
         });
 
@@ -123,5 +125,9 @@ export default class Socket {
 
   onInitial (func) {
     this.initial = func;
+  }
+
+  onClose (func) {
+    this.closeFunction = func;
   }
 }

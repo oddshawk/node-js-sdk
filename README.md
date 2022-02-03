@@ -28,6 +28,9 @@ oddshawk.ws.onUpdate((data) => {
 oddshawk.ws.onInitial((data) => {
   console.log(data);
 });
+oddshawk.ws.onClose(() => {
+  console.log('closed');
+});
 // Subscribe
 oddshawk.ws.subscribe({
   sport: 'Horse Racing'
@@ -56,6 +59,9 @@ oddshawk.ws.onUpdate((data) => {
 });
 oddshawk.ws.onInitial((data) => {
   console.log(data);
+});
+oddshawk.ws.onClose(() => {
+  console.log('closed');
 });
 // Subscribe
 oddshawk.ws.subscribe({
