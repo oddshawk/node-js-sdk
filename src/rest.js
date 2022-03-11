@@ -94,27 +94,29 @@ export default class Rest {
 
   async matchEvent (provider, name, time, sport) {
     await this.authenticate();
-    return axios.get('https://www.odds.software/rest/match/event?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport).then(response => {
+    const options = this.options();
+    return axios.get('https://www.odds.software/rest/match/event?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport, options).then(response => {
       if (response.data) {
         return response.data.event;
       } else {
         return false;
       }
     }).catch(e => {
-      throw new Error('API request failed with message: ' + e.message);
+      return false;
     });
   }
 
   async matchSelection (provider, name, time, sport, eventName) {
     await this.authenticate();
-    return axios.get('https://www.odds.software/rest/match/selection?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&event=' + eventName).then(response => {
+    const options = this.options();
+    return axios.get('https://www.odds.software/rest/match/selection?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&event=' + eventName, options).then(response => {
       if (response.data) {
         return response.data.event;
       } else {
         return false;
       }
     }).catch(e => {
-      throw new Error('API request failed with message: ' + e.message);
+      return false;
     });
   }
 }
