@@ -84,7 +84,6 @@ export default class Rest {
     await this.authenticate();
     const search = new URLSearchParams(filter).toString();
     const options = this.options();
-    console.log(options);
     return axios.get('https://www.odds.software/rest/odds?' + search, options).then(response => {
       return response.data;
     }).catch(e => {
@@ -97,7 +96,7 @@ export default class Rest {
     const options = this.options();
     return axios.get('https://www.odds.software/rest/match/event?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport, options).then(response => {
       if (response.data) {
-        return response.data.event;
+        return response.data;
       } else {
         return false;
       }
@@ -111,7 +110,7 @@ export default class Rest {
     const options = this.options();
     return axios.get('https://www.odds.software/rest/match/selection?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&event=' + eventName, options).then(response => {
       if (response.data) {
-        return response.data.event;
+        return response.data;
       } else {
         return false;
       }
