@@ -26,6 +26,7 @@ export default class Socket {
 
         this.ws.onerror = (e) => {
           console.log(e);
+          this.errorFunction();
           this.closed = true;
         };
 
@@ -73,6 +74,7 @@ export default class Socket {
 
         this.ws.on('error', (e) => {
           console.log(e);
+          this.errorFunction();
           this.closed = true;
         });
 
@@ -129,5 +131,9 @@ export default class Socket {
 
   onClose (func) {
     this.closeFunction = func;
+  }
+
+  onError (func) {
+    this.errorFunction = func;
   }
 }
