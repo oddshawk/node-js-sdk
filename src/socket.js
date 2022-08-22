@@ -4,10 +4,10 @@ export default class Socket {
   constructor (username, hash) {
     this.username = username;
     this.hash = hash;
-    this.closed = false;
   }
 
   connect () {
+    this.closed = false;
     this.connected = new Promise(resolve => {
       if (global.WebSocket) {
         this.ws = new global.WebSocket('wss://ws.odds.software');
