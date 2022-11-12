@@ -57,8 +57,9 @@ export default class Rest {
 
   async events (fromNow = true, filter = []) {
     await this.authenticate();
+    const options = this.options();
     const search = new URLSearchParams(filter).toString();
-    return axios.get('https://www.odds.software/rest/odds/events?fromNow=' + fromNow + '&' + search).then(response => {
+    return axios.get('https://www.odds.software/rest/odds/events?fromNow=' + fromNow + '&' + search, options).then(response => {
       return response.data;
     }).catch(e => {
       throw new Error('API request failed with message: ' + e.message);
@@ -67,8 +68,9 @@ export default class Rest {
 
   async competitions (fromNow = true, filter = []) {
     await this.authenticate();
+    const options = this.options();
     const search = new URLSearchParams(filter).toString();
-    return axios.get('https://www.odds.software/rest/odds/competitions?fromNow=' + fromNow + '&' + search).then(response => {
+    return axios.get('https://www.odds.software/rest/odds/competitions?fromNow=' + fromNow + '&' + search, options).then(response => {
       return response.data;
     }).catch(e => {
       throw new Error('API request failed with message: ' + e.message);
@@ -77,7 +79,8 @@ export default class Rest {
 
   async sports (fromNow = true) {
     await this.authenticate();
-    return axios.get('https://www.odds.software/rest/odds/sports?fromNow=' + fromNow).then(response => {
+    const options = this.options();
+    return axios.get('https://www.odds.software/rest/odds/sports?fromNow=' + fromNow, options).then(response => {
       return response.data;
     }).catch(e => {
       throw new Error('API request failed with message: ' + e.message);
