@@ -55,9 +55,29 @@ export default class Rest {
     }
   }
 
-  async events (fromNow = true) {
+  async events (fromNow = true, filter = []) {
     await this.authenticate();
-    return axios.get('https://www.odds.software/rest/odds/events?fromNow=' + fromNow).then(response => {
+    const search = new URLSearchParams(filter).toString();
+    return axios.get('https://www.odds.software/rest/odds/events?fromNow=' + fromNow + '&' + search).then(response => {
+      return response.data;
+    }).catch(e => {
+      throw new Error('API request failed with message: ' + e.message);
+    });
+  }
+
+  async competitions (fromNow = true, filter = []) {
+    await this.authenticate();
+    const search = new URLSearchParams(filter).toString();
+    return axios.get('https://www.odds.software/rest/odds/competitions?fromNow=' + fromNow + '&' + search).then(response => {
+      return response.data;
+    }).catch(e => {
+      throw new Error('API request failed with message: ' + e.message);
+    });
+  }
+
+  async sports (fromNow = true) {
+    await this.authenticate();
+    return axios.get('https://www.odds.software/rest/odds/sports?fromNow=' + fromNow).then(response => {
       return response.data;
     }).catch(e => {
       throw new Error('API request failed with message: ' + e.message);
