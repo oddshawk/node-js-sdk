@@ -1,6 +1,6 @@
 {
   "name": "@oddshawk/oddshawk-sdk",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "SDK for connecting to the Odds Hawk Data Feed",
   "main": "index.js",
   "scripts": {
