@@ -17,6 +17,9 @@ export default class Socket {
             user: this.username,
             hash: this.hash
           }));
+          this.ws.send(JSON.stringify({
+            message: 'ping'
+          }));
         };
 
         this.ws.onclose = (e) => {
@@ -34,11 +37,6 @@ export default class Socket {
           message = JSON.parse(message.data);
           switch (message.message) {
             case 'auth':
-              setTimeout(() => {
-                this.ws.send(JSON.stringify({
-                  message: 'ping'
-                }));
-              }, 15000);
               resolve();
               break;
             case 'pong':
@@ -46,7 +44,7 @@ export default class Socket {
                 this.ws.send(JSON.stringify({
                   message: 'ping'
                 }));
-              }, 30000);
+              }, 15000);
               break;
             case 'updates':
               this.updates(message.data);
@@ -65,6 +63,9 @@ export default class Socket {
             user: this.username,
             hash: this.hash
           }));
+          this.ws.send(JSON.stringify({
+            message: 'ping'
+          }));
         });
 
         this.ws.on('close', (e) => {
@@ -82,11 +83,6 @@ export default class Socket {
           message = JSON.parse(message.data);
           switch (message.message) {
             case 'auth':
-              setTimeout(() => {
-                this.ws.send(JSON.stringify({
-                  message: 'ping'
-                }));
-              }, 15000);
               resolve();
               break;
             case 'pong':
@@ -94,7 +90,7 @@ export default class Socket {
                 this.ws.send(JSON.stringify({
                   message: 'ping'
                 }));
-              }, 30000);
+              }, 15000);
               break;
             case 'updates':
               this.updates(message.data);

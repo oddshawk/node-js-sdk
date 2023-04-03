@@ -16,7 +16,8 @@ export default class Rest {
           headers: {
             'X-OH-User': this.username
           },
-          withCredentials: true
+          withCredentials: true,
+          timeout: 15000
         };
       } else {
         return {
@@ -24,7 +25,8 @@ export default class Rest {
             'X-OH-User': this.username,
             'X-OH-Hash': this.hash
           },
-          withCredentials: true
+          withCredentials: true,
+          timeout: 15000
         };
       }
     } else {
@@ -32,7 +34,8 @@ export default class Rest {
         headers: {
           'X-OH-User': this.username,
           'X-OH-Hash': generateHash(this.hash)
-        }
+        },
+        timeout: 15000
       };
     }
   }
