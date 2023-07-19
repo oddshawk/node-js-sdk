@@ -117,10 +117,10 @@ export default class Rest {
     });
   }
 
-  async matchEvent (provider, name, time, sport) {
+  async matchEvent (provider, name, time, sport, init = false) {
     await this.authenticate();
     const options = this.options();
-    return axios.get('https://www.odds.software/rest/match/event?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport, options).then(response => {
+    return axios.get('https://www.odds.software/rest/match/event?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
       if (response.data) {
         return response.data;
       } else {
@@ -131,10 +131,10 @@ export default class Rest {
     });
   }
 
-  async matchSelection (provider, name, time, sport, eventName) {
+  async matchSelection (provider, name, time, sport, eventName, init = false) {
     await this.authenticate();
     const options = this.options();
-    return axios.get('https://www.odds.software/rest/match/selection?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&event=' + eventName, options).then(response => {
+    return axios.get('https://www.odds.software/rest/match/selection?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&event=' + eventName + '&init=' + init, options).then(response => {
       if (response.data) {
         return response.data;
       } else {
