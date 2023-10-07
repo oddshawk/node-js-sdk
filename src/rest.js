@@ -2,11 +2,12 @@ import axios from 'axios';
 import generateHash from './generateHash.js';
 
 export default class Rest {
-  constructor (username, hash, isPassword) {
+  constructor (username, hash, isPassword, baseUrl = 'https://www.odds.software') {
     this.username = username;
     this.hash = hash;
     this.isPassword = isPassword; // If is not password then we use cookie authentication after first request
     this.authenticated = isPassword;
+    this.baseUrl = baseUrl;
   }
 
   options () {
@@ -42,7 +43,7 @@ export default class Rest {
 
   async authenticate () {
     if (!this.isPassword && !this.authenticated) {
-      return axios.get('https://www.odds.software/authenticate', {
+      return axios.get(this.baseUrl + '/authenticate', {
         headers: {
           'X-OH-User': this.username,
           'X-OH-Hash': this.hash
@@ -62,7 +63,7 @@ export default class Rest {
     await this.authenticate();
     const options = this.options();
     const search = new URLSearchParams(filter).toString();
-    return axios.get('https://www.odds.software/rest/odds/events?fromNow=' + fromNow + '&' + search, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/odds/events?fromNow=' + fromNow + '&' + search, options).then(response => {
       return response.data;
     }).catch(e => {
       throw new Error('API request failed with message: ' + e.message);
@@ -73,7 +74,7 @@ export default class Rest {
     await this.authenticate();
     const options = this.options();
     const search = new URLSearchParams(filter).toString();
-    return axios.get('https://www.odds.software/rest/odds/competitions?fromNow=' + fromNow + '&' + search, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/odds/competitions?fromNow=' + fromNow + '&' + search, options).then(response => {
       return response.data;
     }).catch(e => {
       throw new Error('API request failed with message: ' + e.message);
@@ -83,7 +84,7 @@ export default class Rest {
   async sports (fromNow = true) {
     await this.authenticate();
     const options = this.options();
-    return axios.get('https://www.odds.software/rest/odds/sports?fromNow=' + fromNow, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/odds/sports?fromNow=' + fromNow, options).then(response => {
       return response.data;
     }).catch(e => {
       throw new Error('API request failed with message: ' + e.message);
@@ -110,7 +111,7 @@ export default class Rest {
     await this.authenticate();
     const search = new URLSearchParams(filter).toString();
     const options = this.options();
-    return axios.get('https://www.odds.software/rest/odds?' + search, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/odds?' + search, options).then(response => {
       return response.data;
     }).catch(e => {
       throw new Error('API request failed with message: ' + e.message);
@@ -120,7 +121,7 @@ export default class Rest {
   async matchEvent (provider, name, time, sport, init = false) {
     await this.authenticate();
     const options = this.options();
-    return axios.get('https://www.odds.software/rest/match/event?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/match/event?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
       if (response.data) {
         return response.data;
       } else {
@@ -134,7 +135,7 @@ export default class Rest {
   async matchSelection (provider, name, time, sport, eventName, init = false) {
     await this.authenticate();
     const options = this.options();
-    return axios.get('https://www.odds.software/rest/match/selection?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&event=' + eventName + '&init=' + init, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/match/selection?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&event=' + eventName + '&init=' + init, options).then(response => {
       if (response.data) {
         return response.data;
       } else {
