@@ -94,6 +94,49 @@ export default class Rest {
   /**
    * Filter options
    * fromNow boolean
+   * sport string
+   * provider string
+   * competition string (the competition id)
+   *
+   * @param fromNow
+   * @param filter
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  async markets (fromNow = true, filter = []) {
+    await this.authenticate();
+    const options = this.options();
+    const search = new URLSearchParams(filter).toString();
+    return axios.get(this.baseUrl + '/rest/odds/markets?fromNow=' + fromNow + '&' + search, options).then(response => {
+      return response.data;
+    }).catch(e => {
+      throw new Error('API request failed with message: ' + e.message);
+    });
+  }
+
+  /**
+   * Filter options
+   * fromNow boolean
+   * sport string
+   * competition string (the competition id)
+   *
+   * @param fromNow
+   * @param filter
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  async providers (fromNow = true, filter = []) {
+    await this.authenticate();
+    const options = this.options();
+    const search = new URLSearchParams(filter).toString();
+    return axios.get(this.baseUrl + '/rest/odds/providers?fromNow=' + fromNow + '&' + search, options).then(response => {
+      return response.data;
+    }).catch(e => {
+      throw new Error('API request failed with message: ' + e.message);
+    });
+  }
+
+  /**
+   * Filter options
+   * fromNow boolean
    * eventTime int
    * eventName string
    * selectionStatus "ACTIVE"|"REMOVED"|"HIDDEN"
