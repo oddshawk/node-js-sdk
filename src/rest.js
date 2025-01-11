@@ -202,4 +202,18 @@ export default class Rest {
       return false;
     });
   }
+
+  async matchCompetition (provider, name, time, sport, init = false) {
+    await this.authenticate();
+    const options = this.options();
+    return axios.get(this.baseUrl + '/rest/match/competition?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
+      if (response.data) {
+        return response.data;
+      } else {
+        return false;
+      }
+    }).catch(e => {
+      return false;
+    });
+  }
 }
