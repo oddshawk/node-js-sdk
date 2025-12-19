@@ -164,7 +164,7 @@ export default class Rest {
   async matchEvent (provider, name, time, sport, init = false) {
     await this.authenticate();
     const options = this.options();
-    return axios.get(this.baseUrl + '/rest/match/event?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/match/event?provider=' + provider + '&name=' + encodeURIComponent(name) + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
       if (response.data) {
         return response.data;
       } else {
@@ -178,7 +178,7 @@ export default class Rest {
   async matchSelection (provider, name, time, sport, eventName, init = false) {
     await this.authenticate();
     const options = this.options();
-    return axios.get(this.baseUrl + '/rest/match/selection?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&event=' + eventName + '&init=' + init, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/match/selection?provider=' + provider + '&name=' + encodeURIComponent(name) + '&time=' + time + '&sport=' + sport + '&event=' + eventName + '&init=' + init, options).then(response => {
       if (response.data) {
         return response.data;
       } else {
@@ -192,7 +192,7 @@ export default class Rest {
   async matchTeam (provider, name, time, sport, init = false) {
     await this.authenticate();
     const options = this.options();
-    return axios.get(this.baseUrl + '/rest/match/team?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/match/team?provider=' + provider + '&name=' + encodeURIComponent(name) + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
       if (response.data) {
         return response.data;
       } else {
@@ -206,7 +206,7 @@ export default class Rest {
   async matchCompetition (provider, name, time, sport, init = false) {
     await this.authenticate();
     const options = this.options();
-    return axios.get(this.baseUrl + '/rest/match/competition?provider=' + provider + '&name=' + name + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
+    return axios.get(this.baseUrl + '/rest/match/competition?provider=' + provider + '&name=' + encodeURIComponent(name) + '&time=' + time + '&sport=' + sport + '&init=' + init, options).then(response => {
       if (response.data) {
         return response.data;
       } else {
