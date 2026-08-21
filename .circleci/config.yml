@@ -1,0 +1,40 @@
+version: 2.1
+
+orbs:
+  slack: circleci/slack@4.4.2
+  npm-audit: oddshawk/npm-audit@1.0.0
+
+jobs:
+  test:
+    docker:
+      - image: cimg/node:26.4
+    steps:
+      - checkout
+      - run: node --version
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
+      - run: npm ci
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+      - npm-audit/audit
+      - run:
+          name: lint + unit tests
+          command: npm test
+      - slack/notify:
+          event: fail
+          mentions: '@developers'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: basic_success_1
+
+workflows:
+  test:
+    jobs:
+      - test:
+          context:
+            - Slack

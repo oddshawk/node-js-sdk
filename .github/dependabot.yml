@@ -1,0 +1,19 @@
+# Dependabot — oddshawk-sdk (cn-123 SDK wave)
+# Human pins: eslint major (fleet eslint 10 + FlatCompat / legacy-peer-deps);
+# mocha 11 + serialize-javascript override (stable, not mocha 12 RC).
+# CI audit: oddshawk/npm-audit@1.0.0 (Dependabot does not manage CircleCI orbs).
+# No Docker ecosystem — library package only.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: eslint
+        update-types:
+          - version-update:semver-major
+      - dependency-name: mocha
+        update-types:
+          - version-update:semver-major
