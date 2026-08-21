@@ -1,3 +1,10 @@
 .idea
 .eslintrc.cjs
+eslint.config.cjs
 test
+okf-bundle
+.circleci
+.github
+AGENTS.md
+.gitignore
+.npmrc

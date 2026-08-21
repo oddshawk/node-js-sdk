@@ -1,8 +1,12 @@
 {
   "name": "@oddshawk/oddshawk-sdk",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "SDK for connecting to the Odds Hawk Data Feed",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "src"
+  ],
   "scripts": {
     "pretest": "eslint --fix .",
     "test": "mocha --recursive --color"
@@ -11,6 +15,7 @@
   "engines": {
     "node": ">=26"
   },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oddshawk/node-js-sdk.git"
