@@ -1,5 +1,4 @@
-import chai from 'chai';
-// import sinon from 'sinon';
+import * as chai from 'chai';
 import sinonChai from 'sinon-chai';
 import OddsHawk from '../src/oddshawk.js';
 import Rest from '../src/rest.js';
