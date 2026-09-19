@@ -13,7 +13,7 @@ Published npm package `@oddshawk/oddshawk-sdk` — client library for the OddsHa
 ## Runtime flow
 
 1. Construct `OddsHawk(username, hashOrPassword, isPassword, baseUrl)`.
-2. REST: optional `/authenticate` (browser / pre-hashed cookie path), then catalog GETs under `/rest/odds*` (and `/rest/match/*` helpers).
+2. REST: optional `/authenticate` (browser / pre-hashed cookie path), then catalog GETs under `/rest/odds*`, plus the `/rest/match/*` matching helpers (authenticated like the rest of the API).
 3. WebSocket: connect to `wss://ws.odds.software`, send auth + ping, subscribe with sport/filter payloads, receive `initial` / update messages.
 4. Node (`isPassword: true`): SDK derives time-based HMAC via `generateHash` on each request. Browser (`isPassword: false`): caller supplies a precomputed hash; cookie session after first auth.
 
@@ -38,6 +38,6 @@ Library only — no service deploy. Publish to npm (`publishConfig.access: publi
 
 ## Related systems
 
-- `oddshawk-rest` — REST auth + odds catalog (`/authenticate`, `/rest/odds*`)
+- `oddshawk-rest` — REST auth + odds catalog (`/authenticate`, `/rest/odds*`); the `/rest/match/*` matching helpers live in the OpenAPI `Matching` section
 - `oddshawk-socket` — live odds WebSocket (`wss://ws.odds.software`)
 - Sibling: `oddshawk-python-sdk` (Python client; separate packaging)
