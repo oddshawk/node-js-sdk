@@ -15,7 +15,6 @@
   "engines": {
     "node": ">=26"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/oddshawk/node-js-sdk.git"
@@ -30,7 +29,7 @@
   },
   "homepage": "https://github.com/oddshawk/node-js-sdk#readme",
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.6",
+    "@eslint/eslintrc": "^3.3.7",
     "chai": "^6.2.2",
     "eslint": "^10.7.0",
     "eslint-config-semistandard": "^17.0.0",
@@ -39,7 +38,7 @@
     "eslint-plugin-n": "^18.2.2",
     "eslint-plugin-promise": "^6.6.0",
     "globals": "^17.7.0",
-    "mocha": "^11.7.6",
+    "mocha": "^12.0.2",
     "serialize-javascript": "^7.0.7",
     "sinon": "^22.0.0",
     "sinon-chai": "^4.0.1"
