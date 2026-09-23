@@ -38,7 +38,7 @@ Aligned with OpenAPI public paths:
 | `rest.providers(fromNow, filter)` | `GET /rest/odds/providers` |
 | `rest.competitions(fromNow, filter)` | `GET /rest/odds/competitions` |
 
-`odds` filter keys include: `fromNow`, `eventTime`, `eventName`, `eventId`, `sport`, `provider`, `selectionStatus`, `market`, `updatedBefore`, `competition`, `competitionName`, `sortField`, `sortDirection`, `limit`, `skip`.
+`odds` filter keys include: `fromNow`, `eventTime`, `eventName`, `sport`, `provider`, `selectionStatus`, `market`, `updatedBefore`, `competition`, `competitionName`, `sortField`, `sortDirection`, `limit`, `skip`. To pin a single event, pass `eventName` together with `eventTime`.
 
 The `/rest/match/*` helpers are documented separately under [Matching](#matching) — a separate surface, authenticated like the rest of the API.
 
@@ -77,11 +77,24 @@ const events = await oddshawk.rest.events(true, { sport: 'Horse Racing' });
 
 Catalog REST methods throw `OddsHawkApiError` on HTTP/transport failure:
 
-- `status` — HTTP status when a response was received (`403`, `400`, `500`, …)
+- `status` — HTTP status when a response was received (`403`, `400`, `429`, `500`, …)
 - `data` — response body when present
-- `code` — optional server `code` string if the body includes one
+- `code` — the body's `code` field when present. The live failures below put their machine-readable code in `error` instead (e.g. `coverage_not_entitled`, `throttled`), so read `data.error` for it.
 
-Today’s live statuses include **403** (not authenticated) and **400** (invalid odds query). Codes such as `feed_down`, `catalog_dropped`, `payment_required`, and usage/metering response headers are **reserved / forthcoming** (T1/T2) — this SDK does not require them.
+Live statuses:
+
+| Status | When |
+|--------|------|
+| **403** | Missing/invalid hash or session (plain-text body); or the request is outside your account's coverage grant — `{"error":"coverage_not_entitled"}` |
+| **400** | Invalid odds query (empty `eventTime` or `eventName`) |
+| **429** | A capped account is already over this hour's data-point limit — `{"error":"throttled",…}`, including `retry_after_seconds` |
+| **404** | No match on `/rest/match/*` |
+
+Metering is live too: successful responses on the metered routes (`GET /rest/odds` and `/rest/match/*`) carry your current usage in the `X-Data-Points-This-Hour`, `X-Data-Points-Limit` and `X-Hour-Resets-At` headers, and `GET /rest/account` reports the same limit plus your coverage grant. This SDK returns response bodies only, so read those headers from a direct HTTP call if you need them.
+
+The following codes are **planned and not emitted yet**: `feed_down`, `catalog_dropped`, `payment_required` — do not depend on them.
+
+Guides: https://odds.software/guides/errors.md and https://odds.software/guides/coverage.md.
 
 ## Matching
 
@@ -100,8 +113,8 @@ it is available to any **authenticated** account (the same auth headers as every
   event start in unix seconds; `sport` is required.
 - `init: true` registers an unresolved name for curation — the call that registers it still resolves to `false`.
 - Unlike catalog methods, these return `false` on no match / error instead of throwing.
-- `provider: 'Betfair Exchange'` uses an exact stored-odds lookup instead of the canonical dictionary
-  (except `matchTeam`, which has no Betfair Exchange branch).
+- Some lookups resolve to just the canonical name (for example `{ event: { name } }`) instead of a
+  dictionary record — treat those as successful resolutions.
 
 Full guide: https://odds.software/guides/matching.md
 

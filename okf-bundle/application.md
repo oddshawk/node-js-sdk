@@ -38,6 +38,20 @@ Library only — no service deploy. Publish to npm (`publishConfig.access: publi
 
 ## Related systems
 
-- `oddshawk-rest` — REST auth + odds catalog (`/authenticate`, `/rest/odds*`); the `/rest/match/*` matching helpers live in the OpenAPI `Matching` section
+- `oddshawk-rest` — REST auth + odds catalog (`/authenticate`, `/rest`, `/rest/odds*`, `/rest/account`); the `/rest/match/*` matching helpers live in the OpenAPI `Matching` section
 - `oddshawk-socket` — live odds WebSocket (`wss://ws.odds.software`)
 - Sibling: `oddshawk-python-sdk` (Python client; separate packaging)
+
+## Public-docs policy (what must not ship)
+
+The npm README and the shipped sources are customer-facing, so they name providers only as examples
+(`Bet365`) and never describe feed composition or the API's per-provider branches — that material is
+maintainer-only and lives in `oddshawk-rest`'s `okf-bundle/application.md` § *Internal-only details*.
+They also carry no internal task references, no "reserved / forthcoming" wording for the metering
+headers (live since cn-124/cn-125: `X-Data-Points-*`, `403 coverage_not_entitled`, `429 throttled`),
+and no `eventId` (an internal key, not part of the documented query surface — use `eventName` +
+`eventTime`). `test/publicDocs.test.js` fails the suite if any of that reappears.
+
+`GET /rest/account-usage` (the current-hour metering snapshot) is deliberately outside the public
+catalog and is not wrapped here: usage is already live on every metered response (`X-Data-Points-*`),
+in the `429` body, and via `GET /rest/account`'s `throttle` block.

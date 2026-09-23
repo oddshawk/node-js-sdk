@@ -144,9 +144,11 @@ export default class Rest {
 
   /**
    * Search odds (`GET /rest/odds`).
-   * Query keys (OpenAPI 0.3.0): fromNow, eventTime, eventName, eventId, sport,
-   * provider, selectionStatus, market, updatedBefore, competition, competitionName,
+   * Query keys (OpenAPI 0.3.0): fromNow, eventTime, eventName, sport, provider,
+   * selectionStatus, market, updatedBefore, competition, competitionName,
    * sortField, sortDirection, limit, skip.
+   *
+   * To pin a single event, pass `eventName` together with `eventTime`.
    * @param {object|URLSearchParams|Array} filter
    */
   async odds (filter) {
