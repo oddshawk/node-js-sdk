@@ -1,6 +1,8 @@
 /**
  * HTTP / transport error from the OddsHawk REST client.
- * Does not depend on entitlements or usage headers (those land with T1/T2).
+ * Carries the status and body exactly as the API returned them; the API uses more than one body
+ * shape (JSON `{ error }` on `/rest/match/*` plus coverage and throttle failures, plain text on the
+ * odds routes), so no single error envelope is assumed here.
  */
 export default class OddsHawkApiError extends Error {
   /**
@@ -12,7 +14,10 @@ export default class OddsHawkApiError extends Error {
     this.name = 'OddsHawkApiError';
     this.status = status;
     this.data = data;
-    /** Optional server error code when present (e.g. reserved: feed_down, catalog_dropped, payment_required). */
+    /**
+     * The body's `code` field when present. Live failures use `error` instead
+     * (e.g. `coverage_not_entitled`, `throttled`), which `message` quotes.
+     */
     this.code = code;
     if (cause) {
       this.cause = cause;
