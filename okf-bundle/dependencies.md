@@ -43,3 +43,9 @@ Weekly Dependabot + audit CI; Node LTS hop monthly; publish handoff after green 
 - Credentials rotation: cn-37
 - Catalog / OpenAPI surface refresh: cn-127 (parallel SDK product work)
 - Direct consumers (Phase 4 bumps after npm publish): `node-server`, `daily-goals`, plus scrapers with a direct `@oddshawk/oddshawk-sdk` dep (`betfred-scraper`, `oddshawk-spreadex-scraper`, `goalbet-scraper`, `coolbet-scraper`, `williamhill-scraper`, `boylesports-scraper`, www `oddschecker-scraper`; `fitzdares-scraper` excluded from cn-123 v1)
+
+## Held dependencies
+
+| Package | Held at | Why | Revisit when |
+|---|---|---|---|
+| `eslint-plugin-promise` | `^6.6.0` | `eslint-config-standard@17.1.0` and `eslint-config-semistandard@17.0.0` both peer `eslint-plugin-promise: ^6.0.0`; neither has published a ^7-compatible release. 7.x (only 7.3.0 declares eslint 10 support) would run outside the declared peer range and make `npm ls` report ELSPROBLEMS. No security advisory applies — this is dev-only lint currency. | either config publishes an `eslint-plugin-promise ^7` peer |

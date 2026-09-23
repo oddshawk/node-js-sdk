@@ -3,6 +3,12 @@
 # mocha 11 + serialize-javascript override (stable, not mocha 12 RC).
 # CI audit: oddshawk/npm-audit@1.0.0 (Dependabot does not manage CircleCI orbs).
 # No Docker ecosystem — library package only.
+# HOLD eslint-plugin-promise at ^6.x — do not merge 6->7 until the configs support it:
+#   eslint-config-standard@17.1.0 and eslint-config-semistandard@17.0.0 both peer
+#   eslint-plugin-promise ^6.0.0. No release of either accepts ^7 yet. Bumping to 7.x
+#   (only 7.3.0 declares eslint 10 support) runs outside the declared peer range and makes
+#   `npm ls` report ELSPROBLEMS. Revisit when either config publishes an eslint-plugin-promise ^7 peer.
+
 version: 2
 updates:
   - package-ecosystem: npm
@@ -11,6 +17,9 @@ updates:
       interval: weekly
     open-pull-requests-limit: 10
     ignore:
+      - dependency-name: eslint-plugin-promise
+        update-types:
+          - version-update:semver-major
       - dependency-name: eslint
         update-types:
           - version-update:semver-major
