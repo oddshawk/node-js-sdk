@@ -30,15 +30,15 @@
   "homepage": "https://github.com/oddshawk/node-js-sdk#readme",
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
-    "chai": "^6.2.2",
+    "chai": "^6.3.0",
     "eslint": "^10.7.0",
     "eslint-config-semistandard": "^17.0.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-n": "^18.2.2",
+    "eslint-plugin-n": "^18.4.0",
     "eslint-plugin-promise": "^6.6.0",
-    "globals": "^17.7.0",
-    "mocha": "^12.0.2",
+    "globals": "^17.13.0",
+    "mocha": "^12.0.3",
     "serialize-javascript": "^7.0.7",
     "sinon": "^22.0.0",
     "sinon-chai": "^4.0.1"
@@ -46,6 +46,6 @@
   "dependencies": {
     "axios": "^1.18.1",
     "js-sha256": "^1.0.0",
-    "ws": "^8.21.1"
+    "ws": "^8.22.0"
   }
 }
