@@ -7,7 +7,7 @@ orbs:
 jobs:
   test:
     docker:
-      - image: cimg/node:26.4
+      - image: cimg/node:26.12.1
     steps:
       - checkout
       - run: node --version
