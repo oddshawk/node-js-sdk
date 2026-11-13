@@ -19,7 +19,12 @@ npm install @oddshawk/oddshawk-sdk
 | **Node (password)** | `new OddsHawk(user, password, true)` | SDK derives a time-based SHA-256 hash on each REST call via `generateHash` |
 | **Browser (pre-hash)** | `new OddsHawk(user, hash, false)` | Caller supplies a server-side hash; call `rest.authenticate()` once to set the `oh-id` cookie, then cookie + `X-OH-USER` |
 
-Hash algorithm (same as OpenAPI): SHA-256 hex of `password + unixSeconds`, then append `unixSeconds` as 8 lowercase hex digits. Use exported `generateHash(password)` in Node when needed.
+The signature is derived from the account password, so it must never reach a browser. There are two ways to authenticate:
+
+1. **Server-side, password mode.** A password-mode construction holds the password and the SDK signs each REST request and the socket handshake as it sends them, so nothing has to be pre-computed or refreshed.
+2. **Client-side, browser mode.** Either proxy the calls through your own servers, so the password stays there and the browser never needs it, or give each authorised user a **pre-generated hash** — produced on your server, valid for the shortest window your risk allows — to construct the client with. A pre-generated hash in browser mode also sets the `oh-id` session cookie, so one signature covers the reads that follow; a long-lived hash handed to the browser is a credential in the browser and should be treated as one.
+
+Hash algorithm (same as OpenAPI): SHA-256 hex of `password + unixSeconds`, then append `unixSeconds` as lowercase hex, unpadded. Use exported `generateHash(password)` in Node.js.
 
 Optional 4th argument: `baseUrl` (default `https://www.odds.software`).
 

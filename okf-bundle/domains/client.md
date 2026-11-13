@@ -3,7 +3,7 @@ type: Reference
 title: Client
 description: The package entry point — the object a caller constructs and works through, and the two transports it reaches.
 tags: [okf, domains, client, oddshawk-sdk]
-timestamp: 2026-11-13T17:39:00Z
+timestamp: 2026-11-14T09:20:00Z
 ---
 
 # Client
@@ -16,7 +16,7 @@ One construction gives a caller the odds catalog and the matching helpers throug
 
 A rebuild gives the object a caller already holds a new credential and REST origin, and the reads made after it use that pair.
 
-A caller's credential authenticates the catalog reads and the live feed whichever mode it holds, a password or a hash the caller's own server computed, so one construction covers either mode (Request signing, [request-signing.md](request-signing.md)).
+A caller's credential authenticates the catalog reads and the live feed whichever mode it holds, a password or a hash the caller's own server computed, so one construction covers either mode. Which of the two ways to run — a server that holds the password, or a browser behind a proxy or a pre-generated hash — is [request-signing.md](request-signing.md)'s (Request signing).
 
 A username or credential that is missing or not a string is refused with a `TypeError`, at construction and at every rebuild.
 
