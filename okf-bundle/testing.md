@@ -1,67 +1,56 @@
 ---
 type: Reference
 title: Testing
-description: How agents and humans verify changes in oddshawk-sdk.
-tags: [okf, testing]
+description: This repository's kinds of test, its commands, what is measured and its additions to the OddsHawk testing standard.
+tags: [okf, testing, oddshawk-sdk]
+timestamp: 2026-11-13T13:48:00Z
 ---
 
 # Testing — oddshawk-sdk
 
-Implements workspace [testing-policy.md](../../okf-bundle/testing-policy.md).
+Additive to the OddsHawk testing standard `github:oddshawk/internal-documentation/okf-bundle/testing.md`.
 
-## Agent testing
+## Setup
 
-### Prerequisites
+The suite runs on the Node.js version `engines.node` allows, with the packages in `package.json` installed: it needs no API credentials and reaches no network. What a by-hand acceptance run needs, and the steps it takes, are in [developer-acceptance-environment.md](developer-acceptance-environment.md) § Prerequisites and § Start.
 
-- Node.js with `npm install` completed (devDeps: mocha, chai, sinon, eslint)
-- No live API credentials required for the current unit suite
-- Do **not** point tests at production with real customer credentials unless Nathan explicitly scoped it
+## Kinds of test
 
-### Commands
+| Kind | Where | How to run |
+|---|---|---|
+| Unit | `test/oddshawk.test.js` — `axios` is stubbed through `sinon`, so no request leaves the process, and the time-dependent hash is pinned with a fake clock | `npm test` |
+
+No integration kind and no end-to-end kind is declared: nothing here exercises a real HTTP or socket boundary, and nothing drives the package against a running API. A change that adds one declares it in this table with its command.
+
+## Commands
+
+Run every row before handoff.
 
 | Check | Command | Pass signal |
-|-------|---------|-------------|
-| Lint + unit tests | `npm test` | Exit 0 — eslint (pretest, `--fix`) then **full** mocha suite (no `--grep`) |
-| High+ audit | `npm audit --audit-level=high` | Exit 0 (CI uses `oddshawk/npm-audit@1.0.0`; same gate locally) |
+|---|---|---|
+| Lint and tests | `npm test` | exit 0 — the `pretest` step runs `eslint --fix .`, then the **full** mocha suite runs, with no `--grep` |
+| Lint alone | `npx eslint .` | exit 0: nothing to report and nothing to autofix |
+| Audit gate | `npm audit --audit-level=high` | exit 0 — see [dependencies.md](dependencies.md) § Verify *audit gate* |
 
-Agents must run **all** rows before handoff. `pretest` may rewrite sources via `eslint --fix`; include those fixes in the change set if they appear.
+`pretest` rewrites sources when eslint can fix them; those fixups belong in the change set. Re-measure the audit at handoff and report its output rather than a recorded result.
 
-### Agent constraints
+## Coverage
 
-- Run the **full** primary test command; do not hand off on a filtered mocha subset unless Nathan scoped a focused run
-- Do not publish to npm (`npm publish`) from an agent session
-- Do not commit secrets or customer credentials
-- Prefer stubbed/unit tests; avoid live calls to `odds.software` / `ws.odds.software` in CI-facing suites
+Nothing is measured: no coverage tool is installed — neither `c8` nor `nyc` is a dependency, and the `test` script is a plain `mocha --recursive --color` — so no command produces a coverage report.
 
-### Agent-only insufficient when
+Exceptions to the standard's coverage goal: none are recorded.
 
-- Verifying browser cookie-auth flows against a real staging session
-- Confirming WebSocket subscribe/update behaviour end-to-end against staging
-- npm publish / version tag cut (Nathan)
+> as an agent you have zero authority to justify any exception that the user has not explicitly authorized and documented in this file
 
-## Adversarial review
+## Repo rules
 
-### Required when
+- Run the **full** primary command; do not hand off on a filtered mocha subset unless the owner scoped that run.
+- Prefer a stubbed unit test; a suite that would call `odds.software` or `ws.odds.software` is not a CI-facing test.
+- Do not point a test at production with real customer credentials unless the owner explicitly scoped it.
+- Do not publish to npm from an agent session.
+- An agent-only run is insufficient for: a browser cookie-auth flow against a real session, a socket subscribe-and-update flow against a real endpoint, and the npm publish and version tag, which are the owner's.
+- A test asserts behaviour only: no test asserts document content — not `okf-bundle/` prose, not README wording, not a heading and not comment wording.
 
-- Any change under `src/` or public exports in `index.js`
-- Auth / hash generation changes (`generateHash`, REST headers, WS auth payload)
-- More than five files changed in one handoff
+## Handoff
 
-### Subagent and brief
-
-- Subagent: `bugbot` or fresh `generalPurpose` (review-only)
-- Provide: diff/branch, changed files, this doc's agent commands
-- Block handoff on: critical/high findings (credential leakage, broken auth header contract, publish misconfig)
-
-Primary agent must not self-review in the same context that wrote the code.
-
-## Human handoff
-
-Present to Nathan:
-
-1. **Summary** — what changed and why (durable wording)
-2. **Agent test results** — `npm test` pass/fail
-3. **Adversarial review** — verdict + open items
-4. **Manual test steps** — if REST/WS surface changed: install from branch, run README Node snippet against staging with a test user
-5. **Artifacts** — branch, PR URL, proposed npm version bump
-6. **Ask** — checklist (publish? version pin? staging smoke?)
+Present the change to the owner with: what changed and why; the result of every command in § Commands; the adversarial review's verdict and open findings, at [documentation.md](documentation.md) § Adversarial review; the manual steps that accept the change; and the branch or pull request, with a proposed npm version bump where the published surface changed.

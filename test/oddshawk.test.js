@@ -114,6 +114,16 @@ describe('Oddshawk', () => {
       expect(mapped.status).to.equal(null);
       mapped.message.should.match(/no response/);
     });
+
+    it('should label a hinted status with its hint and an unhinted status with HTTP', () => {
+      const messageFor = (status, data) => mapAxiosError({ response: { status, data } }).message;
+      messageFor(429, { error: 'throttled' })
+        .should.equal('OddsHawk API 429 Too Many Requests: throttled');
+      messageFor(403, {}).should.equal('OddsHawk API 403 Forbidden (not authenticated or not permitted)');
+      messageFor(404, 'no match').should.equal('OddsHawk API HTTP 404: no match');
+      messageFor(401, { message: 'unauthorized' })
+        .should.equal('OddsHawk API HTTP 401: unauthorized');
+    });
   });
 
   describe('Rest catalog calls', () => {

@@ -2,18 +2,33 @@ import axios from 'axios';
 import generateHash from './generateHash.js';
 import OddsHawkApiError, { mapAxiosError } from './apiError.js';
 
+/** The request header carrying the OddsHawk username. */
 const USER_HEADER = 'X-OH-USER';
+/** The request header carrying the signature in password mode and the caller's hash in browser mode, dropped once the browser-mode session is authenticated. */
 const HASH_HEADER = 'X-OH-HASH';
 
+/**
+ * The REST client: the catalog reads, the matching helpers and, in browser mode, the exchange that turns a hash into a session cookie.
+ */
 export default class Rest {
+  /**
+   * @param {string} username The OddsHawk identifier every request is authenticated with.
+   * @param {string} hash The password in password mode, and the hash the caller's own server computed in browser mode.
+   * @param {boolean} isPassword Whether `hash` is a password to sign for each request.
+   * @param {string} [baseUrl='https://www.odds.software'] The origin every request is sent to.
+   */
   constructor (username, hash, isPassword, baseUrl = 'https://www.odds.software') {
     this.username = username;
     this.hash = hash;
-    this.isPassword = isPassword; // If is not password then we use cookie authentication after first request
+    this.isPassword = isPassword;
     this.authenticated = isPassword;
     this.baseUrl = baseUrl;
   }
 
+  /**
+   * The axios options for a request in the client's mode and session state.
+   * @returns {Object} The headers to send, the 15-second timeout and, in browser mode, the credentials flag.
+   */
   options () {
     if (!this.isPassword) {
       if (this.authenticated) {
@@ -45,6 +60,12 @@ export default class Rest {
     }
   }
 
+  /**
+   * A failed request rejects with the mapped error.
+   * @param {string} path The path under the base URL.
+   * @param {Object} options
+   * @returns {Promise<*>} The response body.
+   */
   _get (path, options) {
     return axios.get(this.baseUrl + path, options).then(response => {
       return response.data;
@@ -53,6 +74,10 @@ export default class Rest {
     });
   }
 
+  /**
+   * Exchanges the hash for a browser-mode session, the one request sent without a timeout, rejecting with the mapped error when the exchange fails.
+   * @returns {Promise<boolean|Object>} `true`, or the exchange's body on the call that sends it.
+   */
   async authenticate () {
     if (!this.isPassword && !this.authenticated) {
       return axios.get(this.baseUrl + '/authenticate', {
@@ -73,8 +98,7 @@ export default class Rest {
   }
 
   /**
-   * Public API version (`GET /rest`).
-   * @returns {Promise<{ version: string }>}
+   * @returns {Promise<*>} The API's answer body.
    */
   async version () {
     await this.authenticate();
@@ -82,10 +106,9 @@ export default class Rest {
   }
 
   /**
-   * Distinct events (`GET /rest/odds/events`).
-   * Filter keys: sport, competition, provider, market.
-   * @param {boolean} [fromNow=true]
-   * @param {object|URLSearchParams|Array} [filter={}]
+   * @param {boolean} [fromNow=true] Stringified into the query string ahead of the `filter` keys.
+   * @param {Object|URLSearchParams|Array|string} [filter={}]
+   * @returns {Promise<*>} The API's answer body.
    */
   async events (fromNow = true, filter = {}) {
     await this.authenticate();
@@ -95,10 +118,9 @@ export default class Rest {
   }
 
   /**
-   * Distinct competitions (`GET /rest/odds/competitions`).
-   * Filter keys: sport, provider.
-   * @param {boolean} [fromNow=true]
-   * @param {object|URLSearchParams|Array} [filter={}]
+   * @param {boolean} [fromNow=true] Stringified into the query string ahead of the `filter` keys.
+   * @param {Object|URLSearchParams|Array|string} [filter={}]
+   * @returns {Promise<*>} The API's answer body.
    */
   async competitions (fromNow = true, filter = {}) {
     await this.authenticate();
@@ -108,8 +130,8 @@ export default class Rest {
   }
 
   /**
-   * Distinct sports (`GET /rest/odds/sports`).
-   * @param {boolean} [fromNow=true]
+   * @param {boolean} [fromNow=true] Stringified into the query string as given.
+   * @returns {Promise<*>} The API's answer body.
    */
   async sports (fromNow = true) {
     await this.authenticate();
@@ -117,10 +139,9 @@ export default class Rest {
   }
 
   /**
-   * Distinct market names (`GET /rest/odds/markets`).
-   * Filter keys: sport, competition, provider.
-   * @param {boolean} [fromNow=true]
-   * @param {object|URLSearchParams|Array} [filter={}]
+   * @param {boolean} [fromNow=true] Stringified into the query string ahead of the `filter` keys.
+   * @param {Object|URLSearchParams|Array|string} [filter={}]
+   * @returns {Promise<*>} The API's answer body.
    */
   async markets (fromNow = true, filter = {}) {
     await this.authenticate();
@@ -130,10 +151,9 @@ export default class Rest {
   }
 
   /**
-   * Distinct providers (`GET /rest/odds/providers`).
-   * Filter keys: sport, competition.
-   * @param {boolean} [fromNow=true]
-   * @param {object|URLSearchParams|Array} [filter={}]
+   * @param {boolean} [fromNow=true] Stringified into the query string ahead of the `filter` keys.
+   * @param {Object|URLSearchParams|Array|string} [filter={}]
+   * @returns {Promise<*>} The API's answer body.
    */
   async providers (fromNow = true, filter = {}) {
     await this.authenticate();
@@ -143,13 +163,8 @@ export default class Rest {
   }
 
   /**
-   * Search odds (`GET /rest/odds`).
-   * Query keys (OpenAPI 0.3.0): fromNow, eventTime, eventName, sport, provider,
-   * selectionStatus, market, updatedBefore, competition, competitionName,
-   * sortField, sortDirection, limit, skip.
-   *
-   * To pin a single event, pass `eventName` together with `eventTime`.
-   * @param {object|URLSearchParams|Array} filter
+   * @param {Object|URLSearchParams|Array|string} filter
+   * @returns {Promise<*>} The API's answer body.
    */
   async odds (filter) {
     await this.authenticate();
@@ -158,10 +173,13 @@ export default class Rest {
   }
 
   /**
-   * Matching helper — documented in the OpenAPI `Matching` section. Like the rest of `/rest`,
-   * it is available to any authenticated account.
-   * `GET /rest/match/event` — resolve a provider event name to a canonical event.
-   * Returns false when the API has no match (or on failure).
+   * Resolves a provider's spelling of an event to the OddsHawk event record, answering `false` for a lookup that gives no record and for a failure of its own request.
+   * @param {string} provider The provider whose spelling `name` is in.
+   * @param {string} name The name to resolve, encoded before it is sent: a canonical name, a provider spelling or a known alias.
+   * @param {number} time The event's start in unix seconds.
+   * @param {string} sport
+   * @param {boolean} [init=false] Whether to register a name the API has not resolved yet.
+   * @returns {Promise<Object|boolean>} The record, or `false` for no record and for a failure of its own request.
    */
   async matchEvent (provider, name, time, sport, init = false) {
     await this.authenticate();
@@ -178,10 +196,14 @@ export default class Rest {
   }
 
   /**
-   * Matching helper — documented in the OpenAPI `Matching` section. Like the rest of `/rest`,
-   * it is available to any authenticated account.
-   * `GET /rest/match/selection` — resolve a provider selection name to a canonical selection.
-   * Returns false when the API has no match (or on failure).
+   * Resolves a provider's spelling of a selection to the OddsHawk selection record, answering `false` for a lookup that gives no record and for a failure of its own request.
+   * @param {string} provider The provider whose spelling `name` is in.
+   * @param {string} name The name to resolve, encoded before it is sent: a canonical name, a provider spelling or a known alias.
+   * @param {number} time The event's start in unix seconds.
+   * @param {string} sport
+   * @param {string} eventName The event the selection belongs to.
+   * @param {boolean} [init=false] Whether to register a name the API has not resolved yet.
+   * @returns {Promise<Object|boolean>} The record, or `false` for no record and for a failure of its own request.
    */
   async matchSelection (provider, name, time, sport, eventName, init = false) {
     await this.authenticate();
@@ -198,10 +220,13 @@ export default class Rest {
   }
 
   /**
-   * Matching helper — documented in the OpenAPI `Matching` section. Like the rest of `/rest`,
-   * it is available to any authenticated account.
-   * `GET /rest/match/team` — resolve a provider team name to a canonical team.
-   * Returns false when the API has no match (or on failure).
+   * Resolves a provider's spelling of a team to the OddsHawk team record, answering `false` for a lookup that gives no record and for a failure of its own request.
+   * @param {string} provider The provider whose spelling `name` is in.
+   * @param {string} name The name to resolve, encoded before it is sent: a canonical name, a provider spelling or a known alias.
+   * @param {number} time The event's start in unix seconds.
+   * @param {string} sport
+   * @param {boolean} [init=false] Whether to register a name the API has not resolved yet.
+   * @returns {Promise<Object|boolean>} The record, or `false` for no record and for a failure of its own request.
    */
   async matchTeam (provider, name, time, sport, init = false) {
     await this.authenticate();
@@ -218,10 +243,13 @@ export default class Rest {
   }
 
   /**
-   * Matching helper — documented in the OpenAPI `Matching` section. Like the rest of `/rest`,
-   * it is available to any authenticated account.
-   * `GET /rest/match/competition` — resolve a provider competition name to a canonical competition.
-   * Returns false when the API has no match (or on failure).
+   * Resolves a provider's spelling of a competition to the OddsHawk competition record, answering `false` for a lookup that gives no record and for a failure of its own request.
+   * @param {string} provider The provider whose spelling `name` is in.
+   * @param {string} name The name to resolve, encoded before it is sent: a canonical name, a provider spelling or a known alias.
+   * @param {number} time The event's start in unix seconds.
+   * @param {string} sport
+   * @param {boolean} [init=false] Whether to register a name the API has not resolved yet.
+   * @returns {Promise<Object|boolean>} The record, or `false` for no record and for a failure of its own request.
    */
   async matchCompetition (provider, name, time, sport, init = false) {
     await this.authenticate();
