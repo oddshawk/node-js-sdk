@@ -1,11 +1,21 @@
 import Websocket from 'ws';
 
+/**
+ * The client over the live odds socket: one auth frame opens the session, and a ping keeps it alive.
+ */
 export default class Socket {
+  /**
+   * @param {string} username The OddsHawk identifier the session authenticates as.
+   * @param {string} hash The credential the auth frame carries, sent exactly as given.
+   */
   constructor (username, hash) {
     this.username = username;
     this.hash = hash;
   }
 
+  /**
+   * Opens the session with the auth frame and the first ping, resolving `connected` once the feed confirms the session, then keeps it open: each answer to a ping schedules the next one 15 seconds later.
+   */
   connect () {
     this.closed = false;
     this.connected = new Promise(resolve => {
@@ -49,7 +59,6 @@ export default class Socket {
             case 'updates':
               this.updates(message.data);
               break;
-            // fallthrough
             case 'initial':
               this.initial(message.data);
               break;
@@ -95,7 +104,6 @@ export default class Socket {
             case 'updates':
               this.updates(message.data);
               break;
-              // fallthrough
             case 'initial':
               this.initial(message.data);
               break;
@@ -105,6 +113,12 @@ export default class Socket {
     });
   }
 
+  /**
+   * Subscribes to the live feed, sending the filter as soon as the session is confirmed.
+   * @param {Object} filter The filter the subscription carries, sent to the feed as given.
+   * @throws {Error} When the connection has already closed.
+   * @throws {TypeError} When called before `connect()`.
+   */
   subscribe (filter) {
     if (this.closed) {
       throw new Error('Socket is closed');
@@ -117,18 +131,30 @@ export default class Socket {
     });
   }
 
+  /**
+   * @param {Function} func Called with the update frame's data.
+   */
   onUpdate (func) {
     this.updates = func;
   }
 
+  /**
+   * @param {Function} func Called with the initial frame's data.
+   */
   onInitial (func) {
     this.initial = func;
   }
 
+  /**
+   * @param {Function} func Runs when the connection closes, and receives no arguments.
+   */
   onClose (func) {
     this.closeFunction = func;
   }
 
+  /**
+   * @param {Function} func Runs when the transport reports an error, and receives no arguments: the client logs the error itself.
+   */
   onError (func) {
     this.errorFunction = func;
   }

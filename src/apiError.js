@@ -1,23 +1,21 @@
 /**
- * HTTP / transport error from the OddsHawk REST client.
- * Carries the status and body exactly as the API returned them; the API uses more than one body
- * shape (JSON `{ error }` on `/rest/match/*` plus coverage and throttle failures, plain text on the
- * odds routes), so no single error envelope is assumed here.
+ * The error a failed catalog read or browser-mode exchange rejects with: what the API answered where a response arrived, and the axios failure behind it.
+ * `name` reads `OddsHawkApiError`, whichever failure produced it.
  */
 export default class OddsHawkApiError extends Error {
   /**
-   * @param {string} message
-   * @param {{ status?: number|null, data?: *, code?: string|null, cause?: Error|null }} [opts]
+   * @param {string} message The failure's one line of text.
+   * @param {Object} [details]
+   * @param {number|null} [details.status=null] The response's HTTP status.
+   * @param {*} [details.data=null] The response body as the API sent it.
+   * @param {string|null} [details.code=null] The body's own `code` member.
+   * @param {Error|null} [details.cause] The axios error behind the failure; the error carries no `cause` member unless one was supplied.
    */
   constructor (message, { status = null, data = null, code = null, cause = null } = {}) {
     super(message);
     this.name = 'OddsHawkApiError';
     this.status = status;
     this.data = data;
-    /**
-     * The body's `code` field when present. Live failures use `error` instead
-     * (e.g. `coverage_not_entitled`, `throttled`), which `message` quotes.
-     */
     this.code = code;
     if (cause) {
       this.cause = cause;
@@ -33,9 +31,9 @@ const STATUS_HINT = {
 };
 
 /**
- * Map an axios failure into OddsHawkApiError with status / body when available.
+ * Turns an axios failure into an `OddsHawkApiError`, keeping the response when one arrived.
  * @param {Error} err
- * @returns {OddsHawkApiError}
+ * @returns {OddsHawkApiError} The error the caller receives, its message drawn from whichever part of the failure arrived.
  */
 export function mapAxiosError (err) {
   if (err.response) {
