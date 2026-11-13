@@ -1,9 +1,9 @@
 ---
 type: Reference
 title: Dependencies
-description: Dependency classes, human pins, holds, cross-repo consumers and verification for oddshawk-sdk (`node-js-sdk`), per `github:oddshawk/internal-documentation/okf-bundle/dependencies.md`.
+description: Dependency classes, human pins, holds and verification for oddshawk-sdk (`node-js-sdk`), per `github:oddshawk/internal-documentation/okf-bundle/dependencies.md`.
 tags: [okf, dependencies, oddshawk-sdk]
-timestamp: 2026-11-13T13:26:00Z
+timestamp: 2026-11-14T09:55:00Z
 ---
 
 ## Summary and classes
@@ -39,17 +39,6 @@ timestamp: 2026-11-13T13:26:00Z
 | package | `eslint-plugin-promise` | `node-js-sdk` | `^6.6.0` | `eslint-config-standard@^17.1.0` and `eslint-config-semistandard@^17.0.0` both peer `eslint-plugin-promise: ^6.0.0`, so a 7.x would run outside the declared peer range and make `npm ls` report a peer problem; it is dev-only lint currency with no advisory | either config publishes a `^7` peer |
 | package | `eslint` major 11 and later | `node-js-sdk` | `10` | Dependabot ignores eslint majors. The tree resolves only with `legacy-peer-deps=true` in `.npmrc`, because declared peers are unsatisfied: `eslint-config-standard@^17.1.0` and `eslint-config-semistandard@^17.0.0` peer `eslint ^8`, both of them peer `eslint-plugin-n` below 17 against the installed `eslint-plugin-n@18.5.0`, `eslint-plugin-import@2.32.0` peers `eslint ^2`–`^9`, and `eslint-plugin-promise@^6.6.0` peers `eslint ^7`–`^9` | those peers allow `eslint 11` and `eslint-plugin-n` runs at a version the two configs peer, and the ignore is lifted |
 | package | `mocha` major 13 and later | `node-js-sdk` | `12` | Dependabot ignores mocha majors | a deliberate major bump, with its tests |
-
-## Cross-repo consumers
-
-| kind | item | provider | consumers | version constraint |
-|---|---|---|---|---|
-| package | `@oddshawk/oddshawk-sdk` | `node-js-sdk` | `github:BARBITRAGE-LTD/node-server`, `github:BARBITRAGE-LTD/daily-goals`, `github:oddshawk/spreadex-scraper`, `github:oddshawk/goalbet-scraper`, `github:npfedwards/projects` | `^1.1.1` |
-| package | `@oddshawk/oddshawk-sdk` | `node-js-sdk` | `github:bettermedia/whichbookie`, through its `services/pre-race-odds` package | `^1.0.17` |
-| package | `@oddshawk/oddshawk-sdk` | `node-js-sdk` | `github:oddshawk/betfred-scraper` | `^1.0.16` |
-| package | `@oddshawk/oddshawk-sdk` | `node-js-sdk` | `github:oddshawk/fitzdares-scraper` | `^1.0.15` |
-| package | `@oddshawk/oddshawk-sdk` | `node-js-sdk` | `github:oddshawk/william-hill-scraper` | `^1.0.12` |
-| package | `@oddshawk/oddshawk-sdk` | `node-js-sdk` | `github:oddshawk/boylesports-scraper`, `github:oddshawk/coolbet-scraper` | `^1.0.11` |
 
 ## Verify
 

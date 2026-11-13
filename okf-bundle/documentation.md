@@ -3,7 +3,7 @@ type: Reference
 title: Documentation
 description: oddshawk-sdk's additions to the OddsHawk documentation standard.
 tags: [okf, documentation, docblocks, oddshawk-sdk]
-timestamp: 2026-11-13T18:31:00Z
+timestamp: 2026-11-14T09:55:00Z
 ---
 
 # Documentation — oddshawk-sdk
@@ -13,6 +13,8 @@ The OddsHawk documentation standard `github:oddshawk/internal-documentation/okf-
 ## Additions
 
 No generated reference is produced or published: no generator is configured and the package carries no generated artefact.
+
+This repository is public and the applications that consume it are private, so no document here names a consumer. `dependencies.md` therefore carries no cross-repo consumers table: its rows name the consumer repositories, and a roster of who uses this package MUST NOT be published from this repository. Who consumes it is checked where that roster is already held.
 
 ## Consumer-facing documents
 
