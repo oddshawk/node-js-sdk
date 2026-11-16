@@ -10,6 +10,6 @@ timestamp: 2026-11-13T12:46:00Z
 
 | class | last checked | last updated |
 |---|---|---|
-| Application packages | | |
-| Language runtime | | |
+| Application packages | 2026-11-16 | 2026-11-16 |
+| Language runtime | 2026-11-16 | |
 | CI toolchain | | |
