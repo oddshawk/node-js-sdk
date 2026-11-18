@@ -1,4 +1,5 @@
 /node_modules
+/coverage
 .idea
 okf-bundle/work-queues/
 tmp-docs/

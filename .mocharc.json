@@ -1,0 +1,4 @@
+{
+  "require": ["./test/support/fake-transport.mjs"],
+  "ignore": ["test/support/**"]
+}

@@ -3,7 +3,7 @@ type: Reference
 title: Testing
 description: This repository's kinds of test, its commands, what is measured and its additions to the OddsHawk testing standard.
 tags: [okf, testing, oddshawk-sdk]
-timestamp: 2026-11-13T13:48:00Z
+timestamp: 2026-11-18T14:58:00Z
 ---
 
 # Testing — oddshawk-sdk
@@ -18,7 +18,7 @@ The suite runs on the Node.js version `engines.node` allows, with the packages i
 
 | Kind | Where | How to run |
 |---|---|---|
-| Unit | `test/oddshawk.test.js` — `axios` is stubbed through `sinon`, so no request leaves the process, and the time-dependent hash is pinned with a fake clock | `npm test` |
+| Unit | `test/oddshawk.test.js` — `axios` is stubbed through `sinon`, and the socket transport is the double at `test/support/fake-transport.mjs`, loaded by `.mocharc.json` before the spec — that double also answers the `ws` specifier — so no request leaves the process; the time-dependent hash is pinned with a fake clock | `npm test` |
 
 No integration kind and no end-to-end kind is declared: nothing here exercises a real HTTP or socket boundary, and nothing drives the package against a running API. A change that adds one declares it in this table with its command.
 
@@ -30,13 +30,16 @@ Run every row before handoff.
 |---|---|---|
 | Lint and tests | `npm test` | exit 0 — the `pretest` step runs `eslint --fix .`, then the **full** mocha suite runs, with no `--grep` |
 | Lint alone | `npx eslint .` | exit 0: nothing to report and nothing to autofix |
+| Coverage gate | `npm run test:coverage` | exit 0 — see § Coverage |
 | Audit gate | `npm audit --audit-level=high` | exit 0 — see [dependencies.md](dependencies.md) § Verify *audit gate* |
 
 `pretest` rewrites sources when eslint can fix them; those fixups belong in the change set. Re-measure the audit at handoff and report its output rather than a recorded result.
 
 ## Coverage
 
-Nothing is measured: no coverage tool is installed — neither `c8` nor `nyc` is a dependency, and the `test` script is a plain `mocha --recursive --color` — so no command produces a coverage report.
+Measured: matched by pattern rather than by name — `index.js` plus `src/**/*.js`. A file in that set is reported at 0% when no test loads it, so an unexercised file cannot drop out of the measurement, and a source file added under `src/` is measured the moment it exists with no edit to the script. Anything outside that pattern is not measured, a dev tool at the repo root (`eslint.config.cjs`) included. What the package publishes is [dependencies.md](dependencies.md) § Summary *publish*; a path added to the published set has to be added to the pattern as well.
+
+All four metrics are held at 100: lines, branches, functions and statements.
 
 Exceptions to the standard's coverage goal: none are recorded.
 
