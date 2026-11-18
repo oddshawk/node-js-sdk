@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "pretest": "eslint --fix .",
-    "test": "mocha --recursive --color"
+    "test": "mocha --recursive --color",
+    "test:coverage": "c8 --all --src . --reporter=text --check-coverage --lines 100 --branches 100 --functions 100 --statements 100 --include=index.js --include=src/**/*.js -- npm test"
   },
   "type": "module",
   "engines": {
@@ -30,6 +31,7 @@
   "homepage": "https://github.com/oddshawk/node-js-sdk#readme",
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
+    "c8": "^12.0.0",
     "chai": "^6.3.0",
     "eslint": "^10.12.0",
     "eslint-config-semistandard": "^17.0.0",

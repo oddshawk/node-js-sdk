@@ -24,6 +24,9 @@ jobs:
       - run:
           name: lint + unit tests
           command: npm test
+      - run:
+          name: coverage gate
+          command: npm run test:coverage
       - slack/notify:
           event: fail
           mentions: '@developers'

@@ -3,7 +3,7 @@ type: Reference
 title: Dependencies
 description: Dependency classes, human pins, holds and verification for oddshawk-sdk (`node-js-sdk`), per `github:oddshawk/internal-documentation/okf-bundle/dependencies.md`.
 tags: [okf, dependencies, oddshawk-sdk]
-timestamp: 2026-11-14T09:55:00Z
+timestamp: 2026-11-14T13:20:16Z
 ---
 
 ## Summary and classes
@@ -11,12 +11,12 @@ timestamp: 2026-11-14T09:55:00Z
 | kind | class | members |
 |---|---|---|
 | package | Application packages | `package.json` and `package-lock.json`: the runtime dependencies `axios`, `js-sha256` and `ws` |
-| package | Application packages | the dev toolchain in `package.json`: `mocha`, `chai`, `sinon`, `sinon-chai` and `serialize-javascript`, plus `eslint` with `@eslint/eslintrc`, `eslint-config-standard`, `eslint-config-semistandard`, `eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-promise` and `globals` |
+| package | Application packages | the dev toolchain in `package.json`: `mocha`, `chai`, `sinon`, `sinon-chai`, `serialize-javascript` and `c8`, plus `eslint` with `@eslint/eslintrc`, `eslint-config-standard`, `eslint-config-semistandard`, `eslint-plugin-import`, `eslint-plugin-n`, `eslint-plugin-promise` and `globals` |
 | package | Application packages | `.npmrc` `legacy-peer-deps=true`, and the `overrides` floors `minimatch ^11.0.4` and `glob ^14.0.3` |
 | package | Application packages | `.github/dependabot.yml`: weekly npm updates, `open-pull-requests-limit: 10`, majors ignored for `eslint`, `mocha` and `eslint-plugin-promise` |
 | publish | Application packages | the npm registry: `@oddshawk/oddshawk-sdk` with `publishConfig.access: public`, published as its own sources (`files`: `index.js` and `src/`), with no build step and no type declarations. No container image, service, server or database is deployed from this repository |
 | runtime | Language runtime | `engines.node: ">=26"`, run on the CI image `cimg/node:26.12.1` |
-| ci | CI toolchain | `.circleci/config.yml`: the orbs `oddshawk/npm-audit@1.0.0` and `circleci/slack@6.1.3`, and the `test` job running `npm ci`, the audit orb and `npm test` |
+| ci | CI toolchain | `.circleci/config.yml`: the orbs `oddshawk/npm-audit@1.0.0` and `circleci/slack@6.1.3`, and the `test` job running `npm ci`, the audit orb, `npm test` and the coverage gate `npm run test:coverage` |
 
 ## Human pins
 
@@ -52,3 +52,4 @@ timestamp: 2026-11-14T09:55:00Z
 | ci | Node image CI runs the suite on | `grep 'image: cimg/node' .circleci/config.yml` | `- image: cimg/node:26.12.1` |
 | ci | audit orb pin | `grep 'npm-audit:' .circleci/config.yml` | `npm-audit: oddshawk/npm-audit@1.0.0` |
 | ci | lint and test step | `grep -A2 'lint + unit tests' .circleci/config.yml` | the step `lint + unit tests` runs `command: npm test` |
+| ci | coverage gate step | `grep -A2 'coverage gate' .circleci/config.yml` | the step `coverage gate` runs `command: npm run test:coverage` |
